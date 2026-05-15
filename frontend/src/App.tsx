@@ -27,6 +27,12 @@ const ClientLayout = lazy(() => import('./components/layout/ClientLayout'));
 const TripSearch   = lazy(() => import('./pages/client/TripSearch'));
 const MyBookings   = lazy(() => import('./pages/client/MyBookings'));
 const MyPayments   = lazy(() => import('./pages/client/MyPayments'));
+const MyInvoices        = lazy(() => import('./pages/client/MyInvoices'));
+const CheckoutPage      = lazy(() => import('./pages/client/CheckoutPage'));
+const ClientProfilePage = lazy(() => import('./pages/client/ClientProfilePage'));
+
+// Invoices (admin + agent)
+const InvoicePage  = lazy(() => import('./pages/invoices/InvoicePage'));
 
 export default function App() {
   return (
@@ -46,10 +52,13 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/explore"      element={<TripSearch />} />
-          <Route path="/my-bookings"  element={<MyBookings />} />
-          <Route path="/my-payments"  element={<MyPayments />} />
-          <Route path="/trips/:id"    element={<TripDetail />} />
+          <Route path="/explore"         element={<TripSearch />} />
+          <Route path="/my-bookings"     element={<MyBookings />} />
+          <Route path="/my-payments"     element={<MyPayments />} />
+          <Route path="/my-invoices"     element={<MyInvoices />} />
+          <Route path="/my-profile"      element={<ClientProfilePage />} />
+          <Route path="/checkout/:id"    element={<CheckoutPage />} />
+          <Route path="/trips/:id"       element={<TripDetail />} />
         </Route>
 
         {/* ── Admin + Agent routes (sidebar layout) ────────── */}
@@ -70,6 +79,7 @@ export default function App() {
           <Route path="/payments"     element={<PaymentList />} />
           <Route path="/customers"    element={<CustomerList />} />
           <Route path="/customers/:id" element={<CustomerDetail />} />
+          <Route path="/invoices"      element={<InvoicePage />} />
 
           {/* Admin only */}
           <Route

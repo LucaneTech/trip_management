@@ -17,6 +17,12 @@ export interface User {
   bio?: string;
 }
 
+export interface Waypoint {
+  name: string;
+  lat: number;
+  lng: number;
+}
+
 export interface Trip {
   id: number;
   title: string;
@@ -28,6 +34,7 @@ export interface Trip {
   available_seats?: number;
   description?: string;
   image?: string;
+  waypoints?: Waypoint[];
   created_at: string;
 }
 
@@ -95,6 +102,7 @@ export interface TripPayload {
   end_date: string;
   capacity: number;
   description?: string;
+  waypoints?: Waypoint[];
 }
 
 export interface BookingPayload {

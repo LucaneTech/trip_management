@@ -12,7 +12,7 @@ export function formatDate(dateStr: string) {
 
 export function formatCurrency(amount: string | number) {
   const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(num);
+  return new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD' }).format(num);
 }
 
 export function formatDateTime(dateStr: string) {

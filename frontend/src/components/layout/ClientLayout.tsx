@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Plane, LogOut } from 'lucide-react';
+import { Plane, LogOut, UserCircle } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import { useAuthStore } from '../../store/authStore';
 import { authService } from '../../services/authService';
@@ -47,6 +47,9 @@ export default function ClientLayout() {
           <NavLink to="/my-payments" className={navLinkClass}>
             Mes paiements
           </NavLink>
+          <NavLink to="/my-invoices" className={navLinkClass}>
+            Mes factures
+          </NavLink>
         </div>
 
         {/* Right — user info + logout */}
@@ -59,6 +62,16 @@ export default function ClientLayout() {
               </span>
             </>
           )}
+          <NavLink
+            to="/my-profile"
+            className={({ isActive }) =>
+              `inline-flex items-center gap-1.5 text-xs transition-colors ${isActive ? 'text-ink font-semibold' : 'text-muted hover:text-ink'}`
+            }
+            title="Mon profil"
+          >
+            <UserCircle className="h-4 w-4" />
+            <span className="hidden sm:block">Mon profil</span>
+          </NavLink>
           <button
             onClick={handleLogout}
             className="inline-flex items-center gap-1.5 text-muted hover:text-ink text-xs transition-colors ml-1"

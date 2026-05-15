@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, Users, Tag, ArrowLeft } from 'lucide-react';
+import { MapPin, Calendar, Users, Tag, ArrowLeft, Map } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { PageSpinner } from '../../components/ui/Spinner';
 import { cn, formatCurrency, formatDate } from '../../lib/utils';
 import { useTrip, useCreateBooking } from '../../hooks/index';
 import { useAuthStore } from '../../store/authStore';
+import TripMapModal from '../../components/ui/TripMapModal';
 
 export default function TripDetail() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,8 @@ export default function TripDetail() {
   const [seats, setSeats] = useState(1);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [showMap, setShowMap] = useState(false);
+  const hasRoute = (trip?.waypoints?.length ?? 0) >= 2;
 
   if (isLoading) return <PageSpinner />;
 
@@ -62,6 +65,14 @@ export default function TripDetail() {
 
   return (
     <div className="px-8 py-8">
+      {showMap && hasRoute && (
+        <TripMapModal
+          waypoints={trip.waypoints!}
+          tripTitle={trip.title}
+          onClose={() => setShowMap(false)}
+        />
+      )}
+
       {/* Back link */}
       <Link
         to="/trips"
@@ -97,6 +108,17 @@ export default function TripDetail() {
               <p className="text-sm text-muted italic">
                 Aucune description disponible.
               </p>
+            )}
+
+            {/* Parcours button */}
+            {hasRoute && (
+              <button
+                onClick={() => setShowMap(true)}
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-600 hover:text-sky-700 border border-sky-200 hover:border-sky-400 bg-sky-50 hover:bg-sky-100 px-4 py-2 rounded-lg transition-colors"
+              >
+                <Map className="h-4 w-4" />
+                Voir le parcours sur la carte
+              </button>
             )}
           </div>
 

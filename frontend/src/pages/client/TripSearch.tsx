@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Calendar, Search, Compass } from 'lucide-react';
+import { MapPin, Calendar, Search, Compass, Map } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Empty } from '../../components/ui/Empty';
 import { PageSpinner } from '../../components/ui/Spinner';
 import { cn, formatCurrency, formatDate } from '../../lib/utils';
 import { useTrips } from '../../hooks/index';
 import type { Trip } from '../../types';
+import TripMapModal from '../../components/ui/TripMapModal';
 
 // ── Trip card ─────────────────────────────────────────────────────────────
 
@@ -17,8 +18,18 @@ interface TripCardProps {
 function TripCard({ trip }: TripCardProps) {
   const seats = trip.available_seats ?? trip.capacity;
   const hasSeats = seats > 0;
+  const [showMap, setShowMap] = useState(false);
+  const hasRoute = (trip.waypoints?.length ?? 0) >= 2;
 
   return (
+    <>
+      {showMap && hasRoute && (
+        <TripMapModal
+          waypoints={trip.waypoints!}
+          tripTitle={trip.title}
+          onClose={() => setShowMap(false)}
+        />
+      )}
     <div className="card overflow-hidden hover:shadow-md transition-shadow flex flex-col group">
       {trip.image ? (
         <div className="relative overflow-hidden">
@@ -59,12 +70,25 @@ function TripCard({ trip }: TripCardProps) {
             <p className="text-xl font-bold text-ink tabular-nums">{formatCurrency(trip.price)}</p>
             <p className="text-xs text-muted">{seats} place{seats !== 1 ? 's' : ''}</p>
           </div>
-          <Link to={`/trips/${trip.id}`}>
-            <Button variant="primary" size="sm">Réserver</Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            {hasRoute && (
+              <button
+                onClick={() => setShowMap(true)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:text-sky-700 border border-sky-200 hover:border-sky-400 bg-sky-50 hover:bg-sky-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                title="Voir le parcours sur la carte"
+              >
+                <Map className="h-3.5 w-3.5" />
+                Parcours
+              </button>
+            )}
+            <Link to={`/trips/${trip.id}`}>
+              <Button variant="primary" size="sm">Réserver</Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 

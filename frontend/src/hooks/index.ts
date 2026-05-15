@@ -4,7 +4,8 @@ import { bookingService } from '../services/bookingService';
 import { paymentService } from '../services/paymentService';
 import { customerService } from '../services/customerService';
 import { dashboardService } from '../services/dashboardService';
-import type { TripPayload, BookingPayload, PaymentPayload, BookingStatus } from '../types';
+import { invoiceService } from '../services/invoiceService';
+import type { TripPayload, BookingPayload, PaymentPayload, BookingStatus, PaymentStatus } from '../types';
 
 // ── Dashboard ─────────────────────────────────────────────────────────────
 export function useDashboard() {
@@ -85,6 +86,28 @@ export function useUpdateBookingStatus() {
   });
 }
 
+export function useCancelBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => bookingService.cancel(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['bookings'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+}
+
+export function useDeleteBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => bookingService.remove(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['bookings'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+}
+
 // ── Payments ──────────────────────────────────────────────────────────────
 export function usePayments() {
   return useQuery({ queryKey: ['payments'], queryFn: paymentService.list });
@@ -98,6 +121,33 @@ export function useCreatePayment() {
       qc.invalidateQueries({ queryKey: ['payments'] });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
     },
+  });
+}
+
+export function useUpdatePaymentStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: PaymentStatus }) =>
+      paymentService.updateStatus(id, status),
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: ['payments'] });
+      qc.invalidateQueries({ queryKey: ['payments', id] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+}
+
+// ── Invoices ──────────────────────────────────────────────────────────────
+
+export function useInvoices() {
+  return useQuery({ queryKey: ['invoices'], queryFn: invoiceService.list });
+}
+
+export function useInvoice(id: number) {
+  return useQuery({
+    queryKey: ['invoices', id],
+    queryFn: () => invoiceService.get(id),
+    enabled: !!id,
   });
 }
 

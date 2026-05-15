@@ -113,7 +113,7 @@ function NewPaymentForm({ onSuccess }: NewPaymentFormProps) {
         {...register('booking')}
       />
       <Input
-        label="Montant (€)"
+        label="Montant (MAD)"
         type="number"
         step="0.01"
         min="0"

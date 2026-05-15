@@ -91,7 +91,7 @@ function PaymentForm({ bookingId, defaultAmount, onSuccess }: PaymentFormProps) 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <Input
-        label="Montant (€)"
+        label="Montant (MAD)"
         type="number"
         step="0.01"
         min="0"

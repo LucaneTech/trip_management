@@ -1,13 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, CalendarCheck, CreditCard, ArrowRight, Star } from 'lucide-react';
+import {
+  MapPin, CalendarCheck, CreditCard, ArrowRight, Star,
+  Receipt, Download, FileText, Loader2, LayoutDashboard,
+} from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { PageSpinner } from '../../components/ui/Spinner';
-import { useBookings } from '../../hooks/index';
+import { DashboardTabs } from '../../components/ui/DashboardTabs';
+import { useToast } from '../../components/ui/Toast';
+import { useBookings, useInvoices } from '../../hooks/index';
+import { invoiceService } from '../../services/invoiceService';
 import { useAuthStore } from '../../store/authStore';
 import { formatCurrency, formatDate } from '../../lib/utils';
 import type { Booking, Trip, User } from '../../types';
+
+const TABS = [
+  { id: 'overview', label: 'Vue générale',  icon: <LayoutDashboard className="h-3.5 w-3.5" /> },
+  { id: 'invoices', label: 'Mes factures',  icon: <Receipt className="h-3.5 w-3.5" /> },
+];
 
 // ── helpers ───────────────────────────────────────────────────────────────
 
@@ -115,6 +126,22 @@ function DestCard({ name, country, img, rating }: typeof DESTINATIONS[0]) {
 export default function ClientDashboard() {
   const { user } = useAuthStore();
   const { data: bookings = [], isLoading } = useBookings();
+  const { data: invoices = [] } = useInvoices();
+  const { success, error: toastError } = useToast();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [downloading, setDownloading] = useState<number | null>(null);
+
+  const handleDownload = async (id: number, number: string) => {
+    setDownloading(id);
+    try {
+      await invoiceService.downloadPdf(id, number);
+      success('Facture téléchargée');
+    } catch {
+      toastError('Impossible de télécharger la facture');
+    } finally {
+      setDownloading(null);
+    }
+  };
 
   const myBookings = useMemo(() => {
     if (!user) return [];
@@ -132,7 +159,67 @@ export default function ClientDashboard() {
   if (isLoading) return <PageSpinner />;
 
   return (
-    <div className="px-6 py-8 max-w-5xl mx-auto space-y-10">
+    <div className="max-w-5xl mx-auto">
+    <div className="px-6 pt-4">
+      <DashboardTabs
+        tabs={TABS}
+        active={activeTab}
+        onChange={setActiveTab}
+        accentClass="border-sky-600 text-sky-700"
+      />
+    </div>
+
+    {activeTab === 'invoices' ? (
+      <div className="px-6 py-8">
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-border flex items-center gap-2">
+            <Receipt className="h-4 w-4 text-sky-600" />
+            <h2 className="text-sm font-semibold text-sky-700">Mes factures</h2>
+          </div>
+          {invoices.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
+              <FileText className="h-10 w-10 text-border" strokeWidth={1.5} />
+              <p className="text-sm font-medium text-ink">Aucune facture disponible</p>
+              <p className="text-xs text-muted">Vos factures apparaissent ici après chaque réservation.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {invoices.map((inv) => (
+                <div key={inv.id} className="flex items-center justify-between gap-4 px-5 py-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-indigo-50 shrink-0">
+                      <FileText className="h-4 w-4 text-indigo-600" />
+                    </span>
+                    <div>
+                      <p className="font-mono text-xs font-bold text-indigo-700">{inv.invoice_number}</p>
+                      <p className="text-sm font-semibold text-ink">{inv.trip_title}</p>
+                      <p className="text-xs text-muted">{inv.seats} place{inv.seats !== 1 ? 's' : ''} · {formatDate(inv.generated_at)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="font-bold text-ink tabular-nums">{formatCurrency(inv.total_amount)}</p>
+                      <Badge value={inv.booking_status as any} />
+                    </div>
+                    <button
+                      onClick={() => handleDownload(inv.id, inv.invoice_number)}
+                      disabled={downloading === inv.id}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition-colors"
+                    >
+                      {downloading === inv.id
+                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                        : <Download className="h-4 w-4" />}
+                      PDF
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+    <div className="px-6 py-8 space-y-10">
 
       {/* ── Welcome ── */}
       <div>
@@ -281,6 +368,8 @@ export default function ClientDashboard() {
         </div>
       </div>
 
+    </div>
+    )} {/* end tab conditional */}
     </div>
   );
 }

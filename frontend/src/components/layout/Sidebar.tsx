@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, MapPin, CalendarCheck, CreditCard,
-  Users, LogOut, Plane, UserCog, Search, BookOpen, Wallet,
+  Users, LogOut, Plane, UserCog, Search, BookOpen, Wallet, Receipt,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuthStore } from '../../store/authStore';
@@ -34,6 +34,12 @@ const adminNav: NavGroup[] = [
       { to: '/users',     icon: <UserCog className="h-4 w-4" />,   label: 'Utilisateurs' },
     ],
   },
+  {
+    label: 'Documents',
+    items: [
+      { to: '/invoices', icon: <Receipt className="h-4 w-4" />, label: 'Factures' },
+    ],
+  },
 ];
 
 const agentNav: NavGroup[] = [
@@ -46,6 +52,13 @@ const agentNav: NavGroup[] = [
     items: [
       { to: '/customers', icon: <Users className="h-4 w-4" />,        label: 'Clients' },
       { to: '/bookings',  icon: <CalendarCheck className="h-4 w-4" />, label: 'Réservations' },
+      { to: '/payments',  icon: <CreditCard className="h-4 w-4" />,    label: 'Paiements' },
+    ],
+  },
+  {
+    label: 'Documents',
+    items: [
+      { to: '/invoices', icon: <Receipt className="h-4 w-4" />, label: 'Factures' },
     ],
   },
 ];
@@ -54,14 +67,15 @@ const clientNav: NavGroup[] = [
   {
     label: 'Voyages',
     items: [
-      { to: '/explore',      icon: <Search className="h-4 w-4" />,        label: 'Explorer' },
+      { to: '/explore', icon: <Search className="h-4 w-4" />, label: 'Explorer' },
     ],
   },
   {
     label: 'Mon espace',
     items: [
-      { to: '/my-bookings',  icon: <BookOpen className="h-4 w-4" />, label: 'Mes réservations' },
-      { to: '/my-payments',  icon: <Wallet className="h-4 w-4" />,   label: 'Mes paiements' },
+      { to: '/my-bookings', icon: <BookOpen className="h-4 w-4" />, label: 'Mes réservations' },
+      { to: '/my-payments', icon: <Wallet className="h-4 w-4" />,   label: 'Mes paiements' },
+      { to: '/my-invoices', icon: <Receipt className="h-4 w-4" />,  label: 'Mes factures' },
     ],
   },
 ];

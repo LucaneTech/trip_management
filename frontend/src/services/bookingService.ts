@@ -7,5 +7,7 @@ export const bookingService = {
   create: (payload: BookingPayload): Promise<Booking> => api.post('/api/bookings/', payload),
   updateStatus: (id: number, status: BookingStatus): Promise<Booking> =>
     api.patch(`/api/bookings/${id}/`, { status }),
+  cancel: (id: number): Promise<Booking> =>
+    api.patch(`/api/bookings/${id}/`, { status: 'cancelled' }),
   remove: (id: number): Promise<void> => api.del(`/api/bookings/${id}/`),
 };
