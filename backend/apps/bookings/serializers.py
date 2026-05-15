@@ -7,10 +7,12 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ('id', 'customer', 'trip', 'seats', 'total_price', 'status', 'created_at')
-        read_only_fields = ('id', 'customer', 'total_price', 'status', 'created_at')
+        read_only_fields = ('id', 'customer', 'total_price', 'created_at')
 
     def validate(self, data):
         trip = data.get('trip')
+        if trip is None:
+            return data
         seats = data.get('seats', 1)
         booked = (
             Booking.objects
@@ -24,6 +26,7 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        validated_data.pop('status', None)  # always start as pending
         trip = validated_data['trip']
         seats = validated_data.get('seats', 1)
         validated_data['total_price'] = trip.price * seats

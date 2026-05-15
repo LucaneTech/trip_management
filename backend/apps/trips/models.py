@@ -11,6 +11,7 @@ class Trip(models.Model):
     capacity = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='trips/', blank=True, null=True)
+    waypoints = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
