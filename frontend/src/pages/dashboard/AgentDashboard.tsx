@@ -7,6 +7,7 @@ import {
   Clock,
   Plus,
   CheckCircle,
+  Headphones,
 } from 'lucide-react';
 import { StatCard } from '../../components/ui/StatCard';
 import { Badge } from '../../components/ui/Badge';
@@ -70,19 +71,52 @@ export default function AgentDashboard() {
   }
 
   return (
-    <div className="px-8 py-8 max-w-screen-xl mx-auto space-y-8">
+    <div className="max-w-screen-xl mx-auto">
 
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-ink">
-            Espace Agent
-          </h1>
-          <span className="bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold px-2.5 py-1">
-            Agent
-          </span>
+      {/* ── Hero strip ── */}
+      <div className="relative overflow-hidden" style={{ height: '180px' }}>
+        <img
+          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=75"
+          alt="Équipe agent voyage"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/90 via-emerald-900/70 to-transparent" />
+        <div className="relative z-10 flex items-center justify-between h-full px-8">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Headphones className="h-4 w-4 text-accent" />
+              <span className="text-accent text-xs font-bold uppercase tracking-widest">Espace Agent</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Bonjour, {greeting}</h1>
+            <p className="text-white/60 text-sm mt-1">Gérez vos clients et réservations depuis ici</p>
+          </div>
+          <div className="hidden md:flex gap-6 text-center">
+            <div>
+              <p className="text-2xl font-bold text-white tabular-nums">{stats.total_customers}</p>
+              <p className="text-white/60 text-xs mt-0.5">Clients</p>
+            </div>
+            <div className="w-px bg-white/20" />
+            <div>
+              <p className="text-2xl font-bold text-white tabular-nums">{stats.total_bookings}</p>
+              <p className="text-white/60 text-xs mt-0.5">Réservations</p>
+            </div>
+            <div className="w-px bg-white/20" />
+            <div>
+              <p className="text-2xl font-bold text-accent tabular-nums">{pendingBookings.length}</p>
+              <p className="text-white/60 text-xs mt-0.5">En attente</p>
+            </div>
+          </div>
         </div>
-        <p className="text-sm text-muted">Bonjour, {greeting}</p>
+      </div>
+
+      <div className="px-8 py-8 space-y-8">
+
+      {/* ── Header badge row ── */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <span className="bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold px-2.5 py-1">
+          Agent
+        </span>
+        <p className="text-sm text-muted">Connecté en tant que <span className="font-semibold text-ink">{greeting}</span></p>
       </div>
 
       {/* ── Stat cards ── */}
@@ -304,6 +338,7 @@ export default function AgentDashboard() {
         </div>
       </div>
 
+      </div>{/* end px-8 py-8 */}
     </div>
   );
 }

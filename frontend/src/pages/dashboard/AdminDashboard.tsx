@@ -8,6 +8,7 @@ import {
   Plus,
   CalendarPlus,
   CreditCard,
+  Globe,
 } from 'lucide-react';
 import { StatCard } from '../../components/ui/StatCard';
 import { Badge } from '../../components/ui/Badge';
@@ -83,18 +84,51 @@ export default function AdminDashboard() {
     'inline-flex items-center gap-2 px-4 py-2.5 rounded text-sm font-medium bg-[#1D4ED8] text-white hover:bg-[#1E40AF] transition-colors';
 
   return (
-    <div className="px-8 py-8 max-w-screen-xl mx-auto space-y-8">
+    <div className="max-w-screen-xl mx-auto">
 
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-ink">
-            Tableau de bord
-          </h1>
-          <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full">
-            Administrateur
-          </span>
+      {/* ── Visual hero strip ── */}
+      <div className="relative overflow-hidden" style={{ height: '200px' }}>
+        <img
+          src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1400&q=75"
+          alt="Carte de voyage"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/70 to-ink/30" />
+        <div className="relative z-10 flex items-center justify-between h-full px-8">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Globe className="h-4 w-4 text-accent" />
+              <span className="text-accent text-xs font-bold uppercase tracking-widest">Administration</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Tableau de bord</h1>
+            <p className="text-white/60 text-sm mt-1 capitalize">{today}</p>
+          </div>
+          <div className="hidden md:flex gap-6 text-center">
+            <div>
+              <p className="text-2xl font-bold text-white tabular-nums">{stats.total_trips}</p>
+              <p className="text-white/60 text-xs mt-0.5">Voyages</p>
+            </div>
+            <div className="w-px bg-white/20" />
+            <div>
+              <p className="text-2xl font-bold text-white tabular-nums">{stats.total_bookings}</p>
+              <p className="text-white/60 text-xs mt-0.5">Réservations</p>
+            </div>
+            <div className="w-px bg-white/20" />
+            <div>
+              <p className="text-2xl font-bold text-accent tabular-nums">{formatCurrency(stats.revenue)}</p>
+              <p className="text-white/60 text-xs mt-0.5">Revenus</p>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="px-8 py-8 space-y-8">
+
+      {/* ── Header badge row ── */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+          Administrateur
+        </span>
         <span className="text-sm text-muted capitalize">{today}</span>
       </div>
 
@@ -330,6 +364,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      </div>{/* end px-8 py-8 */}
     </div>
   );
 }

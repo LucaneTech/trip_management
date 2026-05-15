@@ -22,6 +22,11 @@ module.exports = {
           DEFAULT: '#64748B',
           bg: '#F1F5F9',
         },
+        accent: {
+          DEFAULT: '#F97316',
+          light: '#FFF7ED',
+          hover: '#EA580C',
+        },
         status: {
           pending: '#B45309',
           'pending-bg': '#FFFBEB',
